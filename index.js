@@ -125,6 +125,23 @@ server.put("/api/zoos/:id", async (req, res) => {
   } catch (error) {}
 });
 
+server.put("/api/bears/:id", async (req, res) => {
+  try {
+    const count = await db("bears")
+      .where({ id: req.params.id })
+      .update(req.body);
+
+    if (count > 0) {
+      const bear = await db("bears")
+        .where({ id: req.params.id })
+        .first();
+      res.status(200).json(bear);
+    } else {
+      res.status(404).json({ errorMessage: "Bear not found" });
+    }
+  } catch (error) {}
+});
+
 server.delete("/api/zoos/:id", async (req, res) => {
   try {
     const count = await db("zoos")
@@ -135,6 +152,20 @@ server.delete("/api/zoos/:id", async (req, res) => {
       res.status(204).end();
     } else {
       res.status(404).json({ errorMessage: "Zoo not found" });
+    }
+  } catch (error) {}
+});
+
+server.delete("/api/bears/:id", async (req, res) => {
+  try {
+    const count = await db("bears")
+      .where({ id: req.params.id })
+      .del();
+
+    if (count > 0) {
+      res.status(204).end();
+    } else {
+      res.status(404).json({ errorMessage: "Bear couldn't be found" });
     }
   } catch (error) {}
 });

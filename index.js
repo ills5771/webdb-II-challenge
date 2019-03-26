@@ -88,6 +88,26 @@ server.post("/api/zoos", async (req, res) => {
   }
 });
 
+server.post("/api/bears", (req, res) => {
+  const bear = req.body;
+  if (bear.name) {
+    db("bears")
+      .insert(bear)
+      .then(bear => {
+        res.status(201).json(bear);
+      })
+      .catch(error => {
+        res.status(500).json({
+          error: "There was an error while saving the bear to the database"
+        });
+      });
+  } else {
+    res.status(400).json({
+      errorMessage: "Please provide name for the bear."
+    });
+  }
+});
+
 server.put("/api/zoos/:id", async (req, res) => {
   try {
     const count = await db("zoos")

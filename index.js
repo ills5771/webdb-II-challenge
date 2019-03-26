@@ -30,14 +30,45 @@ server.get("/api/zoos", async (req, res) => {
   }
 });
 
+server.get("/api/bears", async (req, res) => {
+  try {
+    const bears = await db("bears");
+    res.status(200).json(bears);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ errorMessage: "Cannot retrieve bears at the moment" });
+  }
+});
+
 server.get("/api/zoos/:id", async (req, res) => {
   try {
     const zoo = await db("zoos")
       .where({ id: req.params.id })
       .first();
-    res.status(200).json(zoo);
+    if (zoo) {
+      res.status(200).json(zoo);
+    } else {
+      res.status(404).json({ message: "The zoo with that id doesn't exist" });
+    }
   } catch (error) {
     res.status(500).json({ errorMessage: "Cannot retrieve the specific zoo " });
+  }
+});
+
+server.get("/api/bears/:id", async (req, res) => {
+  try {
+    const bear = await db("bears")
+      .where({ id: req.params.id })
+      .first();
+
+    if (bear) {
+      res.status(200).json(bear);
+    } else {
+      res.status(404).json({ message: "The bear with that id doesn't exist" });
+    }
+  } catch (error) {
+    res.status(500).json({ errorMessage: "Cannot retrieve the specific bear" });
   }
 });
 

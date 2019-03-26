@@ -24,7 +24,9 @@ server.get("/api/zoos", async (req, res) => {
     const zoos = await db("zoos");
     res.status(200).json(zoos);
   } catch (error) {
-    res.status(500).json(error);
+    res
+      .status(500)
+      .json({ errorMessage: "Cannot retrieve zoos at the moment" });
   }
 });
 
@@ -35,7 +37,23 @@ server.get("/api/zoos/:id", async (req, res) => {
       .first();
     res.status(200).json(zoo);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ errorMessage: "Cannot retrieve the specific zoo " });
+  }
+});
+
+server.post("/api/zoos", async (req, res) => {
+  try {
+    const [id] = await db("zoos").insert(req.body);
+
+    const zoo = await db("zoos")
+      .where({ id })
+      .first();
+
+    res.status(201).json(zoo);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ errorMessage: "We could not add the zoo to the database" });
   }
 });
 
